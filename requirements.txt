@@ -1,0 +1,5 @@
+flask
+gunicorn
+rasterio
+numpy
+GDAL==3.4.1
