@@ -42,24 +42,25 @@ def image_segmentation():
 
 
 def segment_raster(input_path, municipality):
-    
     print('Empezamos')
     with rasterio.open(input_path) as src:
         nbands = src.count
         width = src.width
         height = src.height
-        band_data = []
-
-        # Leer las bandas en bloques y apilar
-        for i in range(1, nbands + 1):
-            band = src.read(i, window=rasterio.windows.Window(0, 0, width, height))
-            band_data.append(band)
-        band_data = np.dstack(band_data)
         
+        # Preasignar un arreglo para las bandas
+        band_data = np.empty((height, width, nbands), dtype=src.dtypes[0])
+        
+        # Leer las bandas directamente en el arreglo preasignado
+        for i in range(nbands):
+            band = src.read(i + 1, window=rasterio.windows.Window(0, 0, width, height))
+            band_data[:, :, i] = band  # Asignar al arreglo preasignado
+
         # Ajustar intensidades y realizar segmentación
         img = exposure.rescale_intensity(band_data)
-        segments = slic(img, n_segments=10, compactness=0.03)
-        
+
+        segments = slic(img, n_segments=200000, compactness=0.03)
+
         # Guardar el resultado de la segmentación
         output_path = os.path.join(RESULT_FOLDER, f"Segmented_Raster_{municipality}.tif")
 
@@ -69,7 +70,8 @@ def segment_raster(input_path, municipality):
 
             with rasterio.open(output_path, 'w', **profile) as dst:
                 dst.write(segments.astype(rasterio.float32), 1)
-    print('Terminamos segmentacion')
+        print('Terminamos segmentacion')
+
     return output_path
     
 @main.route('/download/<filename>')
