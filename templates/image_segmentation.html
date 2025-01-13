@@ -96,7 +96,7 @@
     {% if success %}
         <div class="success-message">
             <p>ETL completed successfully!</p>
-            <a href="{{ url_for('download_file', filename=shapefile) }}" style="color: #007bff;">Download Classified Shapefile</a>
+            <a href="{{ url_for('download_file', filename=shapefile) }}" style="color: #007bff;">Download Segmented Raster</a>
         </div>
     {% else %}
     <form action="{{ url_for('main.image_segmentation') }}" method="post" enctype="multipart/form-data">
