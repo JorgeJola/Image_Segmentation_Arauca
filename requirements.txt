@@ -3,3 +3,4 @@ gunicorn
 rasterio
 numpy
 GDAL==3.4.1
+scikit-image
