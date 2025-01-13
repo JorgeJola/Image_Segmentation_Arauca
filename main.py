@@ -55,6 +55,7 @@ def segment_raster(input_path, municipality):
         for i in range(nbands):
             band = src.read(i + 1, window=rasterio.windows.Window(0, 0, width, height))
             band_data[:, :, i] = band  # Asignar al arreglo preasignado
+            del band
 
         # Ajustar intensidades y realizar segmentación
         img = exposure.rescale_intensity(band_data)
